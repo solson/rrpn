@@ -45,8 +45,10 @@ class RpnCalculator
         valid_digits = DIGITS[0,radix]
         raise "Invalid digits encountered in the arbitrary radix number '#{item}'." unless digits.downcase.chars.all? { |c| valid_digits.include? c }
 
-      # Math operators
-      when '+', '-', '*', '/', 'div', '%', '**'
+        @stack << (sign + digits).to_i(radix).to_f
+        
+      # Basic arithmetic operators
+      when '+', '-', '*', '/', '**'
         raise "Operator '#{item}' tried to pop 2 items, but the stack only has #{stack.length}" if @stack.length < 2
         a, b = @stack.pop(2)
         @stack << a.send(item, b)
