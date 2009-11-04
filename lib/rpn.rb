@@ -1,4 +1,6 @@
-class RPNCalculator
+class RpnCalculator
+  DIGITS = %w{0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z}
+  
   attr_accessor :stack
 
   def initialize
@@ -24,11 +26,17 @@ class RPNCalculator
       when /^-?0b[01]+$/i
         @stack << item.to_i(2).to_f
 
-      # Custom radix numbers (radix = base)
-      when /^(-?)(\d)+r([0-9a-z])+$/
+      # Arbitrary radix numbers
+      # Format: [sign]<radix>r<digits> (case-insensitive)
+      # Example: -3r102 (base 3 represention of -11)
+      when /^(-?)(\d)+r([0-9a-z]+)$/
         sign, radix, digits = $1, $2, $3
-        digits.to_i(radix).to_f * "#{sign}1".to_f
-        # TODO: Error handling
+        radix = radix.to_i
+        
+        raise "Invalid radix '#{radix}'. Please use a radix in the range of 2..36." if radix < 2 or radix > 36
+        
+        valid_digits = DIGITS[0,radix]
+        raise "Invalid digits encountered in the arbitrary radix number '#{item}'." unless digits.downcase.chars.all? { |c| valid_digits.include? c }
 
       # Math operators
       when '+', '-', '*', '/', 'div', '%', '**'
@@ -64,6 +72,6 @@ class RPNCalculator
   end
 
   def inspect
-    "#<RPNCalculator: #{stack.inspect}>"
+    "#<RpnCalculator: #{stack.inspect}>"
   end
 end
