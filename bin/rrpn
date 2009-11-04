@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'rpn'
+require 'readline'
+
+# Cleanly exit on ^C from user
+stty_save = `stty -g`.chomp
+trap('INT') { system('stty', stty_save); exit }
+
+# Print a newline on exit so it doesn't mess up your shell prompt
+# There must be a better way to do this...
+at_exit { puts }
+
+class RpnInteractive
+  def initialize
+    @calc = RpnCalculator.new
+  end
+  
+  def run
+    while line = Readline.readline(prompt, true)
+      begin
+        last_stack = @calc.stack.dup
+        @calc.calc line
+      rescue RuntimeError => e
+        @calc.stack = last_stack
+        puts e.message
+      end
+    end
+  end
+
+  def prompt
+    num_list = @calc.stack.map{|n| n.to_s.sub(/.0$/, '') }.join(', ')
+    "[#{num_list}]> "
+  end
+end
+
+rpn = RpnInteractive.new
+rpn.run
