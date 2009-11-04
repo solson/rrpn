@@ -81,7 +81,11 @@ class RpnCalculator
       when 'flip'
         # Pops two values and pushes them back in reverse order.
         # [12, 24, 36] flip => [12, 36, 24]
-        @stack += @stack.pop(2).reverse
+        @stack.push(*@stack.pop(2).reverse)
+
+      when 'reverse'
+        # Reverse the entire stack
+        @stack.reverse!
 
       when 'pop'
         # Simply pops one value, destroying it.
