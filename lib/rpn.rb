@@ -7,6 +7,10 @@ class RpnCalculator
     @stack = []
   end
 
+  def reset
+    @stack = []
+  end
+
   def calc(exp)
     exp.split.each do |item|
       case item
