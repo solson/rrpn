@@ -24,7 +24,7 @@ class RpnCalculator
 
       # Hexadecimal numbers
       # Format: [sign]0x<digits> (case-insensitive)
-      when /^-?0x[0-9a-f]$/i
+      when /^-?0x[0-9a-f]+$/i
         @stack << item.to_i(16).to_f
 
       # Octal numbers
