@@ -11,18 +11,25 @@ class RpnCalculator
     exp.split.each do |item|
       case item
       # Decimal numbers
+      # Format: just 0 or any string of digits not starting in 0
+      # (numbers beginning with 0 are treated as octal)
+      # you may also have a sign and a decimal with digits afterwards
+      #   [sign]<digits>[.<decimaldigits>]
       when /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/
         @stack << item.to_f
 
       # Hexadecimal numbers
+      # Format: [sign]0x<digits> (case-insensitive)
       when /^-?0x[0-9a-f]$/i
         @stack << item.to_i(16).to_f
 
       # Octal numbers
+      # Format: [sign]0<digits>
       when /^-?0[0-7]+$/
         @stack << item.to_i(8).to_f
 
       # Binary numbers
+      # Format: [sign]0b<digits> (case-insensitive)
       when /^-?0b[01]+$/i
         @stack << item.to_i(2).to_f
 
