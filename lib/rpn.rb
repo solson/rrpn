@@ -53,6 +53,18 @@ class RpnCalculator
         a, b = @stack.pop(2)
         @stack << a.send(item, b)
 
+      # Bitwise operators (AND, OR, XOR)
+      # These operators will convert the values they pop to integers
+      # (with floor, simply ignoring the decimal part of the float)
+      #
+      # They will push a float back on the stack so that it won't mess
+      # up later operations like division that act differently on
+      # integers in Ruby
+      when '|', '&', '^'
+        raise "Operator '#{item}' tried to pop 2 items, but the stack only has #{stack.length}" if @stack.length < 2
+        a, b = @stack.pop(2).map(&:to_i)
+        @stack << a.send(item, b).to_f
+
       # Convenience math commands
       when 'sum'
         # Reduce the stack to a single value by adding all the numbers
